@@ -29,14 +29,14 @@ jobs:
           image-ref: devsecure-api
           format: table
           ignore-unfixed: true
-          severity: MEDIUM,HIGH,CRITICAL
+          severity: LOW,MEDIUM,HIGH,CRITICAL
           exit-code: 0
 
       - name: 🔐 Snyk - Scan Docker
         uses: snyk/actions/docker@master
         with:
           image: $IMAGE_NAME
-          args: --severity-threshold=medium
+          args: --severity-threshold=low
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           MY_USERNAME: ${{ secrets.MY_USERNAME }}
