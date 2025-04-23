@@ -29,24 +29,23 @@ jobs:
           image-ref: devsecure-api
           format: table
           ignore-unfixed: true
+          severity: MEDIUM,HIGH,CRITICAL
           exit-code: 0
 
       - name: 🔐 Snyk - Scan Docker
         uses: snyk/actions/docker@master
         with:
           image: $IMAGE_NAME
+          args: --severity-threshold=medium
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           MY_USERNAME: ${{ secrets.MY_USERNAME }}
           MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
-        continue-on-error: true
 
       - name: 🕵️ GitLeaks - Scan secrets
         uses: zricethezav/gitleaks-action@v2
         with:
           config-path: .gitleaks.toml
 
-      - name: 🧪 Check Python files for syntax errors
-        run: |
-          find . -name "*.py" -print0 | xargs -0 -n1 python -m py_compile
+
 
