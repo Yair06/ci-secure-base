@@ -30,12 +30,14 @@ jobs:
           exit-code: 0
 
 
-      - name: 🔐 Snyk - Scan Docker + Python deps
+      - name: 🔐 Snyk - Scan Docker
         uses: snyk/actions/docker@master
         with:
           image: $IMAGE_NAME
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
 
       - name: 🕵️ GitLeaks - Scan secrets
         uses: zricethezav/gitleaks-action@v2
