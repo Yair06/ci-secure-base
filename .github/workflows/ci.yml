@@ -1,0 +1,42 @@
+name: 🔐 DevSecure - Security Scans Only
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  IMAGE_NAME: devsecure-api
+  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+jobs:
+  security-scans:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐳 Build Docker image
+        run: docker build -t $IMAGE_NAME .
+
+      - name: 🔍 Trivy - Scan image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: $IMAGE_NAME
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+      - name: 🔐 Snyk - Scan Docker + Python deps
+        uses: snyk/actions/docker@master
+        with:
+          image: $IMAGE_NAME
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: 🕵️ GitLeaks - Scan secrets
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          config-path: .gitleaks.toml
