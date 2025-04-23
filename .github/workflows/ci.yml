@@ -9,6 +9,8 @@ on:
 env:
   IMAGE_NAME: devsecure-api
   SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  MY_USERNAME: ${{ secrets.MY_USERNAME }}  # Secret Username
+  MY_PASSWORD: ${{ secrets.MY_PASSWORD }}  # Secret Password
 
 jobs:
   security-scans:
@@ -29,15 +31,15 @@ jobs:
           ignore-unfixed: true
           exit-code: 0
 
-
       - name: 🔐 Snyk - Scan Docker
         uses: snyk/actions/docker@master
         with:
           image: $IMAGE_NAME
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          MY_USERNAME: ${{ secrets.MY_USERNAME }}  # Pass username to Snyk
+          MY_PASSWORD: ${{ secrets.MY_PASSWORD }}  # Pass password to Snyk
         continue-on-error: true
-
 
       - name: 🕵️ GitLeaks - Scan secrets
         uses: zricethezav/gitleaks-action@v2
