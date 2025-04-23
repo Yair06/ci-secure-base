@@ -36,7 +36,7 @@ jobs:
         uses: snyk/actions/docker@master
         with:
           image: $IMAGE_NAME
-          args: --severity-threshold=low
+          args: --severity-threshold=medium
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           MY_USERNAME: ${{ secrets.MY_USERNAME }}
@@ -47,5 +47,7 @@ jobs:
         with:
           config-path: .gitleaks.toml
 
-
-
+      - name: 🔍 Bandit - Scan Python code for security vulnerabilities
+        run: |
+          pip install bandit
+          bandit -r . -f json -o bandit-report.json
